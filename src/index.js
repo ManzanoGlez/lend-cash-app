@@ -10,7 +10,4 @@ ReactDOM.render(
     document.getElementById("root")
 );
 
-//ReactDOM.render(<App />, document.getElementById("root"));
-
-
 serviceWorker.register();
