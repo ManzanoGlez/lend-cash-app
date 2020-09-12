@@ -24,7 +24,9 @@ export const LoginScreen = () => {
         console.log("handleLoginWithGoogle");
     };
 
-    const isValidForm = () => {};
+    const isValidForm = () => {
+        console.log("isValidForm")
+    };
 
     return (
         <Form
