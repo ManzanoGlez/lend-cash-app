@@ -10,7 +10,7 @@ import { DashboardRouter } from "./dashboard/DashboardRouter";
 export const AppRouter = () => {
 
 
-    const isLogged = false;
+    const isLogged = true;
 
     return (
         <Router>
