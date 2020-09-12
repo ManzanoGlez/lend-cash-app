@@ -1,0 +1,7 @@
+.btn-primary {
+    color: #fff !important;
+    background-color: lighten($color: $primary-color, $amount: 10) !important;
+    border-color:lighten($color: $primary-color, $amount: 40) !important;
+    font-weight: 700 !important;
+    font-size: medium;
+}

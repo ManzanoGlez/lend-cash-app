@@ -1,0 +1,25 @@
+.input-app {
+    color: $dark-grey;
+    border: 5px;
+    padding: 5px;
+    border-bottom: 2px solid $light-grey;
+    font-size: 16px;
+    margin-bottom: 10px;
+    height: 30px;
+    width: 100%;
+
+    transition: border-bottom 0.3s ease;
+
+    &:focus {
+        border-bottom: 2px solid lighten($color: $primary-color, $amount: 20)!important;
+        outline: none !important;
+    }
+}
+
+.text-error {
+    color:  #b50202;
+}
+
+a.link {
+    color: #0056b3;
+}
