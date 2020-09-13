@@ -1,9 +1,10 @@
 import React from "react";
 import { Button, Col, Form, Image, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { Input } from "../../components/Input";
+import { AuthSocialNetworks } from "../../components/Auth/AuthSocialNetworks";
+import { IconApp } from "../../components/IconApp";
+import { InputApp } from "../../components/InputApp";
 import { useForm } from "../../hooks/useForm";
-
 
 export const LoginScreen = () => {
     const [values, handleInputChange] = useForm({
@@ -19,13 +20,9 @@ export const LoginScreen = () => {
         console.log("handleLoginWithEmailPassword");
     };
 
-    const handleLoginWithGoogle = (e) => {
-        e.preventDefault();
-        console.log("handleLoginWithGoogle");
-    };
 
     const isValidForm = () => {
-        console.log("isValidForm")
+        console.log("isValidForm");
     };
 
     return (
@@ -47,7 +44,7 @@ export const LoginScreen = () => {
                 </Col>
             </Row>
 
-            <Input
+            <InputApp
                 title="Correo electrónico"
                 placeholder="Ingrese correo electrónico"
                 type="email"
@@ -56,7 +53,7 @@ export const LoginScreen = () => {
                 value={email}
                 onChange={handleInputChange}
             />
-            <Input
+            <InputApp
                 title="Contraseña"
                 placeholder="Ingrese contraseña"
                 type="password"
@@ -67,25 +64,10 @@ export const LoginScreen = () => {
             />
 
             <Button variant="primary" type="submit" size="lg" block>
-                Iniciar sesión <i className="fas fa-sign-in-alt"></i>
+                Iniciar sesión <IconApp iconClassName="fas fa-sign-in-alt" />
             </Button>
 
-            <div className="auth__social-networks">
-                <p>Iniciar sesión con redes sociales</p>
-
-                <div className="google-btn" onClick={handleLoginWithGoogle}>
-                    <div className="google-icon-wrapper">
-                        <img
-                            className="google-icon"
-                            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-                            alt="google button"
-                        />
-                    </div>
-                    <p className="btn-text">
-                        <b>Sign in with google</b>
-                    </p>
-                </div>
-            </div>
+            <AuthSocialNetworks />
 
             <Link className="link" to={"/auth/register"}>
                 Crear una nueva cuenta

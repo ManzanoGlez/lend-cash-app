@@ -1,7 +1,9 @@
 import React from "react";
 import { Button, Col, Form, Image, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { Input } from "../../components/Input";
+import { AuthSocialNetworks } from "../../components/Auth/AuthSocialNetworks";
+import { IconApp } from "../../components/IconApp";
+import { InputApp } from "../../components/InputApp";
 import { useForm } from "../../hooks/useForm";
 
 export const RegisterScreen = () => {
@@ -20,11 +22,6 @@ export const RegisterScreen = () => {
         isValidForm();
         console.log(values);
         console.log("handleLoginWithEmailPassword");
-    };
-
-    const handleLoginWithGoogle = (e) => {
-        e.preventDefault();
-        console.log("handleLoginWithGoogle");
     };
 
     const isValidForm = () => {};
@@ -50,7 +47,7 @@ export const RegisterScreen = () => {
 
             <Row>
                 <Col md={12} lg={6}>
-                    <Input
+                    <InputApp
                         title="Nombre(s)"
                         placeholder="Ingrese su nombre(s)"
                         type="text"
@@ -60,7 +57,7 @@ export const RegisterScreen = () => {
                     />
                 </Col>
                 <Col md={12} lg={6}>
-                    <Input
+                    <InputApp
                         title="Apellidos"
                         placeholder="Ingrese contraseña"
                         type="text"
@@ -72,7 +69,7 @@ export const RegisterScreen = () => {
             </Row>
             <Row>
                 <Col md={12} lg={6}>
-                    <Input
+                    <InputApp
                         title="Correo electrónico"
                         placeholder="Ingrese correo electrónico"
                         type="email"
@@ -83,7 +80,7 @@ export const RegisterScreen = () => {
                     />
                 </Col>
                 <Col md={12} lg={6}>
-                    <Input
+                    <InputApp
                         title="Teléfono"
                         placeholder="Ingrese contraseña"
                         type="text"
@@ -96,7 +93,7 @@ export const RegisterScreen = () => {
 
             <Row>
                 <Col md={12} lg={6}>
-                    <Input
+                    <InputApp
                         title="Contraseña"
                         placeholder="Ingrese nueva contraseña"
                         type="password"
@@ -106,7 +103,7 @@ export const RegisterScreen = () => {
                     />
                 </Col>
                 <Col md={12} lg={6}>
-                    <Input
+                    <InputApp
                         title="Confirmar contraseña"
                         placeholder="Confirme su contraseña"
                         type="password"
@@ -119,25 +116,10 @@ export const RegisterScreen = () => {
             </Row>
 
             <Button variant="primary" type="submit" size="lg" block>
-                Registrarse <i className="fas fa-sign-in-alt"></i>
+                Registrarse <IconApp iconClassName="fas fa-sign-in-alt" />
             </Button>
 
-            <div className="auth__social-networks">
-                <p>Registrarse con redes sociales</p>
-
-                <div className="google-btn" onClick={handleLoginWithGoogle}>
-                    <div className="google-icon-wrapper">
-                        <img
-                            className="google-icon"
-                            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-                            alt="google button"
-                        />
-                    </div>
-                    <p className="btn-text">
-                        Register with google
-                    </p>
-                </div>
-            </div>
+            <AuthSocialNetworks />
 
             <Link className="link" to={"/auth/login"}>
                 ¿Ya registrado?

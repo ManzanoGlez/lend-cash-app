@@ -2,7 +2,7 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import PropTypes from "prop-types";
 
-export const Input = (props) => {
+export const InputApp = (props) => {
     const {
         name = "",
         onChange = () => {},
@@ -40,7 +40,7 @@ export const Input = (props) => {
     );
 };
 
-Input.propTypes = {
+InputApp.propTypes = {
     placeholder: PropTypes.string,
     type: PropTypes.string,
     infoText: PropTypes.string,
