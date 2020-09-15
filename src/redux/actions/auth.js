@@ -1,91 +1,95 @@
-import Swal from "sweetalert2";
 import { Call } from "../../helpers/fetch";
 import { errorHandler } from "../../helpers/handleErrors";
 import { types } from "../types";
-import { startEventLogout } from "./events";
+import { startUILoading, stopUILoading } from "./ui";
 
-
-export const startLogin = (email, password) => {
+export const startLogin = (email, password, setErrors = null) => {
     return async (dispatch) => {
-        email = email.toString().toLowerCase();
+        dispatch(startUILoading());
 
-        const data = await Call(
-            "/auth/login",
-            "POST",
-            { email, password },
-            false
-        );
+        email = email.toLowerCase();
 
-        if (data.ok) {
-            localStorage.setItem("token", data.access_token);
+        const resp = await Call("/auth/login","POST",{ email, password },false);
+
+        if (resp.success) {
+            const { access_token, user } = resp.success;
+
+            localStorage.setItem("token", access_token);
             localStorage.setItem("token-init-date", new Date().getTime());
 
-            dispatch(login(data.user));
+            dispatch(login(user));
         } else {
-            errorHandler(data);
+            errorHandler(resp, setErrors);
         }
+        dispatch(stopUILoading());
     };
 };
 
-export const startRegister = (name, email, password, password_confirm) => {
+export const startRegister = (
+    name, lastName,  email,  telephone, password, confirm_password, setErrors = null) => {
     return async (dispatch) => {
-        if (password !== password_confirm) {
-            return Swal.fire({
-                title: "Error",
-                text: "Confirmar contraseña debe no coincide.",
-                icon: "warning",
-            });
-        }
+        dispatch(startUILoading());
 
-        email = email.toString().toLowerCase();
+        email = email.toLowerCase();
 
-        const data = await Call(
+        const resp = await Call(
             "/auth/register",
-            "POST",
-            { name, email, password },
+            "PUT",
+            { name, lastName, email, telephone, password, confirm_password },
             false
         );
 
-        if (data.ok) {
-            localStorage.setItem("token", data.access_token);
+        if (resp.success) {
+            const { access_token, user } = resp.success;
+
+            localStorage.setItem("token", access_token);
             localStorage.setItem("token-init-date", new Date().getTime());
-            dispatch(register(data.user));
+
+            dispatch(register(user));
         } else {
-            errorHandler(data);
+            errorHandler(resp, setErrors);
         }
+
+        dispatch(stopUILoading());
     };
 };
 
-export const startChecking = () => {
+export const startRenew = () => {
     return async (dispatch) => {
-        const data = await Call("/auth/renew");
+        if (!localStorage.getItem("token")) {
+            return dispatch(checkingFinish());
+        }
+        dispatch(startUILoading());
+        const resp = await Call("/auth/renew");
 
-        if (data.ok) {
-            localStorage.setItem("token", data.access_token);
+        if (resp.success) {
+            const { access_token, user } = resp.success;
+
+            localStorage.setItem("token", access_token);
             localStorage.setItem("token-init-date", new Date().getTime());
 
-            dispatch(login(data.user));
+            dispatch(login(user));
         } else {
             dispatch(checkingFinish());
         }
+        dispatch(stopUILoading());
     };
 };
 
 export const startLogout = () => {
     return async (dispatch) => {
         localStorage.clear();
-        dispatch(startEventLogout());
         dispatch(logout());
     };
 };
 
 const login = (user) => ({
     type: types.authLogin,
-    payload: user,
+    payload: { user },
 });
 const register = (user) => ({
     type: types.authRegister,
-    payload: user,
+    payload: { user },
 });
 const checkingFinish = () => ({
     type: types.authCheckingFinish,

@@ -1,28 +1,46 @@
 import React from "react";
 import { Button, Col, Form, Image, Row } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { AuthSocialNetworks } from "../../components/Auth/AuthSocialNetworks";
 import { IconApp } from "../../components/IconApp";
 import { InputApp } from "../../components/InputApp";
+import { validate } from "../../helpers/Validate";
 import { useForm } from "../../hooks/useForm";
+import { startLogin } from "../../redux/actions/auth";
 
 export const LoginScreen = () => {
-    const [values, handleInputChange] = useForm({
+    const dispatch = useDispatch();
+
+    const { values, handleInputChange, setErrors } = useForm({
         email: "",
         password: "",
+        errors: {},
     });
-    const { email, password } = values;
 
-    const handleLoginWithEmailPassword = (e) => {
+    const { email, password, errors } = values;
+
+    const handleLoginWithEmailPassword = async (e) => {
         e.preventDefault();
-        isValidForm();
-        console.log(values);
-        console.log("handleLoginWithEmailPassword");
+
+        if (await isValidForm()) return;
+
+        dispatch(startLogin(email, password, setErrors));
     };
 
+    const isValidForm = async () => {
+        const validation = await validate(values, {
+            email: "required|email",
+            password: "required",
+        });
 
-    const isValidForm = () => {
-        console.log("isValidForm");
+        if (validation.fails()) {
+            setErrors(validation.errors.all());
+        } else {
+            setErrors({});
+        }
+
+        return validation.fails();
     };
 
     return (
@@ -47,11 +65,11 @@ export const LoginScreen = () => {
             <InputApp
                 title="Correo electrónico"
                 placeholder="Ingrese correo electrónico"
-                type="email"
-                autoComplete="off"
+                type="text"
                 name="email"
                 value={email}
                 onChange={handleInputChange}
+                errorText={errors.email && errors.email[0]}
             />
             <InputApp
                 title="Contraseña"
@@ -61,6 +79,7 @@ export const LoginScreen = () => {
                 value={password}
                 onChange={handleInputChange}
                 infoText="No compartimos tu información con nadie."
+                errorText={errors.password && errors.password[0]}
             />
 
             <Button variant="primary" type="submit" size="lg" block>

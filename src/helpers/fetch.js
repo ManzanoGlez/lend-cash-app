@@ -3,10 +3,10 @@ const baseUrl = process.env.REACT_APP_API;
 export const Call = async (
     endpoint,
     method = "GET",
-    data = null,
+    body = null,
     signed = true
 ) => {
-    const url = `${baseUrl}/${endpoint}`;
+    let url = `${baseUrl}/${endpoint}`;
 
     const headers = new Headers({
         "Content-Type": "application/json",
@@ -18,15 +18,20 @@ export const Call = async (
         if (token) {
             headers.append("Authorization", token);
         }
-
-      //  throw new Error("No item 'token' in localStorage");
     }
 
-    const resp = await fetch(url, {
+    const options = {
         method,
         headers,
-        body: data ? JSON.stringify(data) : data,
-    });
+        body: body ? JSON.stringify(body) : body
+    };
+
+    if (method === "GET") {
+        url = `${url}?${body}`;
+        delete options.body;
+    } 
+
+    const resp = await fetch(url, options);
 
     const result = await resp.json();
 

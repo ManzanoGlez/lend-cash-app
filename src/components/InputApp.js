@@ -8,6 +8,7 @@ export const InputApp = (props) => {
         onChange = () => {},
         value = "",
         placeholder = "",
+        required = false,
         type = "text",
         title = "",
         infoText = "",
@@ -26,6 +27,7 @@ export const InputApp = (props) => {
             <input
                 id={`id-input-${name}`}
                 className="input-app"
+                required={required}
                 type={type}
                 placeholder={placeholder}
                 autoComplete={autoComplete}

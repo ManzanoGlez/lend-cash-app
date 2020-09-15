@@ -1,8 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { Table } from "react-bootstrap";
+import Pagination from "react-js-pagination";
+import { useDispatch, useSelector } from "react-redux";
+import { AvatarApp } from "../../components/AvatarApp";
 import { CardContainer } from "../../components/Dashboard/CardContainer";
 import { IconApp } from "../../components/IconApp";
+import { useForm } from "../../hooks/useForm";
+import { startShowUsers } from "../../redux/actions/users";
 
 export const UserScreen = () => {
+    const dispatch = useDispatch();
+    const { data, pagination } = useSelector((state) => state.user);
+    const { last_page, current_page, total, from, to, per_page } = pagination;
+    const { values, handleInputChange, setInputValue } = useForm({
+        page: 1,
+        query: "",
+        errors: {},
+    });
+
+    useEffect(() => {
+        dispatch(startShowUsers(values));
+    }, [values, dispatch]);
+
+    useEffect(() => {
+        //Actualiza la pagina a la primera en caso de no a ver resultados en la pagina donde estes hoja
+        if (last_page > 0 && current_page > last_page) {
+            setInputValue("page", 1);
+        }
+    }, [setInputValue, current_page, last_page]);
+
     return (
         <CardContainer title="Inicio">
             <div className="row">
@@ -13,87 +39,105 @@ export const UserScreen = () => {
                 </div>
             </div>
 
-            <div className="row">
-                <div className="col-lg-3 col-sm-12">
-                    <div className="input-group mb-3 search-box">
-                        <i className="fas fa-search" aria-hidden="true"></i>
-                        <input
-                            type="text"
-                            className="form-control dataTable__search-input"
-                            placeholder="Buscar"
-                            aria-label="Buscar"
-                            aria-describedby="search-component"
-                        />
+            <div id="crud-users">
+                <div className="row">
+                    <div className="col-lg-3 col-sm-12">
+                        <div className="input-group mb-3 search-box">
+                            <i className="fas fa-search" aria-hidden="true"></i>
+                            <input
+                                type="text"
+                                className="form-control dataTable__search-input"
+                                placeholder="Buscar"
+                                aria-label="Buscar"
+                                maxLength="20"
+                                aria-describedby="search-component"
+                                name="query"
+                                value={values.query}
+                                onChange={handleInputChange}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="table-responsive border-radios-5">
-                <table className="table table-striped">
-                    <thead className="thead-light">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Correo</th>
-                            <th scope="col">Teléfono</th>
-                            <th scope="col">Acciónes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Jorge Manzano</td>
-                            <td>manzano@gmail.com</td>
-                            <td>3314598239</td>
-                            <td>
-                                <div>
-                                    <IconApp iconClassName="fas fa-edit mx-2" />
-                                    <IconApp iconClassName="fas fa-trash mx-2" />
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <div className="table-responsive border-radios-5">
+                    <Table striped bordered hover size="sm">
+                        <thead className="thead-light">
+                            <tr>
+                                <th scope="col">Nombre(s)</th>
+                                <th scope="col">Apellidos</th>
+                                <th scope="col">Correo</th>
+                                <th scope="col">Teléfono</th>
+                                <th scope="col">Acciónes</th>
+                            </tr>
+                        </thead>
+                        <tbody className="animate__animated animate__animate__fadeInDown animate__slow">
+                            {data.map((user) => (
+                                <tr key={user.id}>
+                                    <td>
+                                        <AvatarApp
+                                            img={user.img}
+                                            textToGenerateAvatar={user.email}
+                                            size={20}
+                                        />
+                                        {user.name}
+                                    </td>
+                                    <td>{user.lastName}</td>
+                                    <td>{user.email}</td>
+                                    <td>{user.telephone}</td>
+                                    <td>
+                                        <div>
+                                            <IconApp
+                                                iconClassName="fas fa-edit mx-2"
+                                                color="#495057"
+                                                isClickable={true}
+                                                onClick={() =>
+                                                    console.log(
+                                                        "editar alert",
+                                                        user.id
+                                                    )
+                                                }
+                                            />
+                                            <IconApp
+                                                iconClassName="fas fa-trash mx-2"
+                                                color="#495057"
+                                                isClickable={true}
+                                                onClick={() =>
+                                                    console.log(
+                                                        "Eliminar alert",
+                                                        user.id
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                   
+                        {total === 0  && <p className="no-results-table">Sin resultados.</p>}
+                   
+                    </Table>
+                </div>
 
-            <div className="float-right">
-                <nav aria-label="Pagination">
-                    <ul className="pagination">
-                        <li className="page-item">
-                            <a
-                                className="page-link"
-                                href="/auth/users"
-                                aria-label="Previous"
-                            >
-                                «<span className="sr-only">«</span>
-                            </a>
-                        </li>
-                        <li className="page-item">
-                            <a className="page-link" href="/auth/users">
-                                1
-                            </a>
-                        </li>
-                        <li className="page-item">
-                            <a className="page-link" href="/auth/users">
-                                2
-                            </a>
-                        </li>
-                        <li className="page-item">
-                            <a className="page-link" href="/auth/users">
-                                3
-                            </a>
-                        </li>
-                        <li className="page-item">
-                            <a
-                                className="page-link"
-                                href="/auth/users"
-                                aria-label="Next"
-                            >
-                                »<span className="sr-only">»</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <div className="float-left">
+                    <small>
+                        Mostrando {from} a {to} de {total} resultados.
+                    </small>
+                </div>
+
+                <div className="float-right">
+                    <Pagination
+                        totalItemsCount={total || 0}
+                        activePage={current_page}
+                        itemsCountPerPage={per_page}
+                        pageRangeDisplayed={10}
+                        itemClass="page-item"
+                        linkClass="page-link"
+                        onChange={(pagePagination) =>
+                            setInputValue("page", pagePagination)
+                        }
+                    />
+                </div>
             </div>
         </CardContainer>
     );

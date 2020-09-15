@@ -8,18 +8,29 @@ export const useForm = (initialState = {}) => {
             ...values,
             [target.name]: target.value,
         });
+        if (values.errors[target.name]) {
+            delete values.errors[target.name];
+        }
     };
 
-        const reset = () => setValues(initialState);
+    const reset = () => setValues(initialState);
 
-
-    const setInputValue = (inputName: String, value: String) => {
+    const setInputValue = (attribute: String, value: String) => {
         setValues({
             ...values,
-            [inputName]: value,
+            [attribute]: value,
+        });
+        if (values.errors[attribute]) {
+            delete values.errors[attribute];
+        }
+    };
+
+    const setErrors = (errors) => {
+        setValues({
+            ...values,
+            errors,
         });
     };
 
-
-    return [values, handleInputChange, reset, setInputValue];
+    return { values, handleInputChange, reset, setInputValue, setErrors };
 };
