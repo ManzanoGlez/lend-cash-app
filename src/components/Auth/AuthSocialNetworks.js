@@ -1,11 +1,14 @@
 import React from 'react'
+import { useDispatch } from 'react-redux';
+import { startLoginWithGoogleProvider } from '../../redux/actions/auth';
 
 export const AuthSocialNetworks = () => {
 
+    const dispatch = useDispatch();
 
     const handleLoginWithGoogle = (e) => {
         e.preventDefault();
-        console.log("handleLoginWithGoogle");
+         dispatch(startLoginWithGoogleProvider());
     };
 
     return (

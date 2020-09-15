@@ -1,5 +1,7 @@
 import { Call } from "../../helpers/fetch";
 import { errorHandler } from "../../helpers/handleErrors";
+import { firebase, googleAuthProvider} from "../../helpers/firebase/firebase-config";
+
 import { types } from "../types";
 import { startUILoading, stopUILoading } from "./ui";
 
@@ -9,7 +11,12 @@ export const startLogin = (email, password, setErrors = null) => {
 
         email = email.toLowerCase();
 
-        const resp = await Call("/auth/login","POST",{ email, password },false);
+        const resp = await Call(
+            "/auth/login",
+            "POST",
+            { email, password },
+            false
+        );
 
         if (resp.success) {
             const { access_token, user } = resp.success;
@@ -26,7 +33,13 @@ export const startLogin = (email, password, setErrors = null) => {
 };
 
 export const startRegister = (
-    name, lastName,  email,  telephone, password, confirm_password, setErrors = null) => {
+    username,
+    email,
+    telephone,
+    password,
+    confirm_password,
+    setErrors = null
+) => {
     return async (dispatch) => {
         dispatch(startUILoading());
 
@@ -35,7 +48,7 @@ export const startRegister = (
         const resp = await Call(
             "/auth/register",
             "PUT",
-            { name, lastName, email, telephone, password, confirm_password },
+            { username, email, telephone, password, confirm_password },
             false
         );
 
@@ -51,6 +64,49 @@ export const startRegister = (
         }
 
         dispatch(stopUILoading());
+    };
+};
+
+export const authWithGoogle = (username, email, telephone, img) => {
+    return async (dispatch) => {
+        dispatch(startUILoading());
+
+        const resp = await Call(
+            "/auth/google",
+            "PUT",
+            { username, email, telephone },
+            false
+        );
+
+        if (resp.success) {
+            const { access_token, user } = resp.success;
+
+            localStorage.setItem("token", access_token);
+            localStorage.setItem("token-init-date", new Date().getTime());
+
+            dispatch(register(user));
+        } else {
+            errorHandler(resp);
+        }
+
+        dispatch(stopUILoading());
+    };
+};
+
+export const startLoginWithGoogleProvider = () => {
+    return  (dispatch) => {
+        firebase
+            .auth()
+            .signInWithPopup(googleAuthProvider)
+            .then(async (data) => {
+                const username =  data.user.displayName;
+                const email =  data.user.email;
+                const telephone =  data.user.phoneNumber;
+                const img = data.user.photoURL;
+
+             dispatch(authWithGoogle(username, email, telephone, img));
+              
+             });
     };
 };
 

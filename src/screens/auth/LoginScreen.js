@@ -28,6 +28,8 @@ export const LoginScreen = () => {
         dispatch(startLogin(email, password, setErrors));
     };
 
+ 
+
     const isValidForm = async () => {
         const validation = await validate(values, {
             email: "required|email",
@@ -86,7 +88,7 @@ export const LoginScreen = () => {
                 Iniciar sesión <IconApp iconClassName="fas fa-sign-in-alt" />
             </Button>
 
-            <AuthSocialNetworks />
+            <AuthSocialNetworks  />
 
             <Link className="link" to={"/auth/register"}>
                 Crear una nueva cuenta

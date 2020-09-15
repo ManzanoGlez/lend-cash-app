@@ -45,7 +45,7 @@ export const NavBar = () => {
                     // title={user.name}
                     title={
                         <>
-                            {user.name}
+                            {user.username}
                             <AvatarApp img={user.img} textToGenerateAvatar={user.email} />
                         </>
                     }

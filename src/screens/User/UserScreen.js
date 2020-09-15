@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Table } from "react-bootstrap";
+import { Col, Dropdown, Image, Row, Table } from "react-bootstrap";
 import Pagination from "react-js-pagination";
 import { useDispatch, useSelector } from "react-redux";
 import { AvatarApp } from "../../components/AvatarApp";
@@ -15,9 +15,9 @@ export const UserScreen = () => {
     const { values, handleInputChange, setInputValue } = useForm({
         page: 1,
         query: "",
+        number_rows: 5,
         errors: {},
     });
-
     useEffect(() => {
         dispatch(startShowUsers(values));
     }, [values, dispatch]);
@@ -30,92 +30,159 @@ export const UserScreen = () => {
     }, [setInputValue, current_page, last_page]);
 
     return (
-        <CardContainer title="Inicio">
-            <div className="row">
-                <div className="col-md-2">
+        <CardContainer title="Usuarios">
+            <Row>
+                <Col md={2}>
                     <a className="btn btn-app mb-3" href="/crud/form">
                         <i className="fa fa-plus" aria-hidden="true"></i> Nuevo
                     </a>
-                </div>
-            </div>
+                </Col>
+            </Row>
 
             <div id="crud-users">
-                <div className="row">
-                    <div className="col-lg-3 col-sm-12">
+                <Row>
+                    <Col sm={12} lg={9}>
+                        <Dropdown>
+                            <Dropdown.Toggle variant="" size="sm">
+                                Registros: {values.number_rows} 
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item
+                                    onClick={() =>
+                                        setInputValue("number_rows", 5)
+                                    }
+                                >
+                                    5
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() =>
+                                        setInputValue("number_rows", 10)
+                                    }
+                                >
+                                    10
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() =>
+                                        setInputValue("number_rows", 25)
+                                    }
+                                >
+                                    25
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() =>
+                                        setInputValue("number_rows", 50)
+                                    }
+                                >
+                                    50
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() =>
+                                        setInputValue("number_rows", 100)
+                                    }
+                                >
+                                    100
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Col>
+                    <Col sm={12} lg={3}>
                         <div className="input-group mb-3 search-box">
-                            <i className="fas fa-search" aria-hidden="true"></i>
+                            <IconApp iconClassName="fas fa-search" />
                             <input
                                 type="text"
                                 className="form-control dataTable__search-input"
                                 placeholder="Buscar"
-                                aria-label="Buscar"
                                 maxLength="20"
-                                aria-describedby="search-component"
                                 name="query"
                                 value={values.query}
                                 onChange={handleInputChange}
                             />
                         </div>
-                    </div>
-                </div>
+                    </Col>
+                </Row>
 
                 <div className="table-responsive border-radios-5">
                     <Table striped bordered hover size="sm">
                         <thead className="thead-light">
-                            <tr>
-                                <th scope="col">Nombre(s)</th>
-                                <th scope="col">Apellidos</th>
+                            <tr className="text-center">
+                                <th scope="col">Usuario</th>
                                 <th scope="col">Correo</th>
                                 <th scope="col">Teléfono</th>
+                                <th scope="col">Por</th>
                                 <th scope="col">Acciónes</th>
                             </tr>
                         </thead>
                         <tbody className="animate__animated animate__animate__fadeInDown animate__slow">
-                            {data.map((user) => (
-                                <tr key={user.id}>
-                                    <td>
-                                        <AvatarApp
-                                            img={user.img}
-                                            textToGenerateAvatar={user.email}
-                                            size={20}
-                                        />
-                                        {user.name}
-                                    </td>
-                                    <td>{user.lastName}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.telephone}</td>
-                                    <td>
-                                        <div>
-                                            <IconApp
-                                                iconClassName="fas fa-edit mx-2"
-                                                color="#495057"
-                                                isClickable={true}
-                                                onClick={() =>
-                                                    console.log(
-                                                        "editar alert",
-                                                        user.id
-                                                    )
-                                                }
+                            {data.map(
+                                ({
+                                    id,
+                                    username,
+                                    email,
+                                    telephone,
+                                    auth_by,
+                                    img,
+                                }) => (
+                                    <tr key={id}>
+                                        <td>
+                                            <AvatarApp
+                                                img={img}
+                                                textToGenerateAvatar={email}
+                                                size={10}
+                                                maxHeight={30}
                                             />
-                                            <IconApp
-                                                iconClassName="fas fa-trash mx-2"
-                                                color="#495057"
-                                                isClickable={true}
-                                                onClick={() =>
-                                                    console.log(
-                                                        "Eliminar alert",
-                                                        user.id
-                                                    )
+                                            {username}
+                                        </td>
+                                        <td>{email}</td>
+                                        <td>
+                                            {telephone
+                                                ? telephone
+                                                : "Sin agregar"}
+                                        </td>
+                                        <td className="text-center">
+                                            <Image
+                                                src={
+                                                    auth_by === "email"
+                                                        ? "/assets/img/by_email.svg"
+                                                        : "/assets/img/by_google.svg"
                                                 }
+                                                style={{ height: 25 }}
                                             />
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                                        </td>
+                                        <td className="text-center">
+                                            <div>
+                                                <IconApp
+                                                    iconClassName="fas fa-edit mx-2"
+                                                    color="#495057"
+                                                    isClickable={true}
+                                                    onClick={() =>
+                                                        console.log(
+                                                            "editar alert",
+                                                            id
+                                                        )
+                                                    }
+                                                />
+                                                <IconApp
+                                                    iconClassName="fas fa-trash mx-2"
+                                                    color="#495057"
+                                                    isClickable={true}
+                                                    onClick={() =>
+                                                        console.log(
+                                                            "Eliminar alert",
+                                                            id
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            )}
                         </tbody>
-                   
-                        {total === 0  && <p className="no-results-table">Sin resultados.</p>}
-                   
+
+                        {total === 0 && (
+                            <p className="no-results-table">Sin resultados.</p>
+                        )}
                     </Table>
                 </div>
 

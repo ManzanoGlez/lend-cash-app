@@ -13,8 +13,7 @@ export const RegisterScreen = () => {
     const dispatch = useDispatch();
 
     const { values, handleInputChange, setErrors } = useForm({
-        name: "",
-        lastName: "",
+        username: "",
         email: "",
         telephone: "",
         password: "",
@@ -22,8 +21,7 @@ export const RegisterScreen = () => {
         errors: {},
     });
     const {
-        name,
-        lastName,
+        username,
         email,
         telephone,
         password,
@@ -36,13 +34,21 @@ export const RegisterScreen = () => {
 
         if (await isValidForm()) return;
 
-        dispatch(startRegister(name, lastName, email, telephone, password,confirm_password,setErrors));
+        dispatch(
+            startRegister(
+                username,
+                email,
+                telephone,
+                password,
+                confirm_password,
+                setErrors
+            )
+        );
     };
 
     const isValidForm = async () => {
         const validation = await validate(values, {
-            name: "required|min:3",
-            lastName: "required|min:3",
+            username: "required|min:3",
             email: "required|email",
             telephone: "required|digits:10",
             password: "required",
@@ -78,26 +84,15 @@ export const RegisterScreen = () => {
             </Row>
 
             <Row>
-                <Col md={12} lg={6}>
+                <Col md={12} lg={12}>
                     <InputApp
-                        title="Nombre(s)"
-                        placeholder="Ingrese su nombre(s)"
+                        title="Nombre de usuario"
+                        placeholder="Ingrese su nombre de usuario"
                         type="text"
-                        name="name"
-                        value={name}
+                        name="username"
+                        value={username}
                         onChange={handleInputChange}
-                        errorText={errors.name && errors.name[0]}
-                    />
-                </Col>
-                <Col md={12} lg={6}>
-                    <InputApp
-                        title="Apellidos"
-                        placeholder="Ingrese contraseña"
-                        type="text"
-                        name="lastName"
-                        value={lastName}
-                        onChange={handleInputChange}
-                        errorText={errors.lastName && errors.lastName[0]}
+                        errorText={errors.username && errors.username[0]}
                     />
                 </Col>
             </Row>
@@ -147,7 +142,10 @@ export const RegisterScreen = () => {
                         name="confirm_password"
                         value={confirm_password}
                         onChange={handleInputChange}
-                        errorText={ errors.confirm_password &&  errors.confirm_password[0]}
+                        errorText={
+                            errors.confirm_password &&
+                            errors.confirm_password[0]
+                        }
                     />
                 </Col>
             </Row>
